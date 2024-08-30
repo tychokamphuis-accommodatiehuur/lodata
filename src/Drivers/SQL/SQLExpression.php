@@ -1319,10 +1319,10 @@ class SQLExpression
 
             $field = $this->entitySet->propertyToExpression($constraint->getProperty());
 
-            $relation = $constraint?->relation;
+            $relation = $constraint->getRelation();
             if (isset($relation) && $relation instanceof HasManyThrough) {
-                $constraint->relation->select($relation->getQualifiedFirstKeyName());
-                $where = preg_replace('/\s+where\s+.*$/i', '', $constraint->relation->toSql());
+                $constraint->getRelation()->select($relation->getQualifiedFirstKeyName());
+                $where = preg_replace('/\s+where\s+.*$/i', '', $constraint->getRelation()->toSql());
                 $this->pushStatement(
                     sprintf('( %s = %s ( %s WHERE',
                         $field->getStatement(),
