@@ -56,6 +56,7 @@ use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
@@ -151,7 +152,9 @@ class EloquentEntitySet extends EntitySet implements CountInterface, CreateInter
      */
     public function getTable(): string
     {
-        return $this->getModel()->getTable();
+        $model = $this->getModel();
+
+        return $model->getTable();
     }
 
     /**
@@ -166,7 +169,7 @@ class EloquentEntitySet extends EntitySet implements CountInterface, CreateInter
     /**
      * Read an Eloquent model
      * @param  PropertyValue  $key  Model key
-     * @return Entity Entity
+     * @return Entity|null Entity
      */
     public function read(PropertyValue $key): Entity
     {
@@ -255,10 +258,6 @@ class EloquentEntitySet extends EntitySet implements CountInterface, CreateInter
     public function delete(PropertyValue $key): void
     {
         $model = $this->getModelByKey($key);
-
-        if (null === $model) {
-            throw new NotFoundException('entity_not_found', 'Entity not found');
-        }
 
         try {
             $model->delete();
@@ -394,6 +393,7 @@ class EloquentEntitySet extends EntitySet implements CountInterface, CreateInter
             $relations[$expansionPropertyName] = function ($builder) use ($expansionSet) {
                 $expansionSet->configureBuilder($builder);
             };
+
 
             $relations = array_merge(
                 $relations,
@@ -543,9 +543,10 @@ class EloquentEntitySet extends EntitySet implements CountInterface, CreateInter
 
             $navigationProperty->setNullable($nullable);
 
-            if ($relation instanceof HasOneOrMany || $relation instanceof BelongsTo) {
+            if ($relation instanceof HasOneOrMany || $relation instanceof BelongsTo || $relation instanceof HasManyThrough) {
                 $localProperty = null;
                 $foreignProperty = null;
+
 
                 switch (true) {
                     case $relation instanceof HasOneOrMany:
@@ -557,10 +558,15 @@ class EloquentEntitySet extends EntitySet implements CountInterface, CreateInter
                         $localProperty = $this->getPropertyBySourceName($relation->getForeignKeyName());
                         $foreignProperty = $right->getPropertyBySourceName($relation->getOwnerKeyName());
                         break;
+
+                    case $relation instanceof HasManyThrough:
+                        $localProperty = $this->getPropertyBySourceName($relation->getLocalKeyName());
+                        $foreignProperty = $right->getPropertyBySourceName($relation->getForeignKeyName());
+                        break;
                 }
 
                 if ($localProperty && $foreignProperty) {
-                    $referentialConstraint = new ReferentialConstraint($localProperty, $foreignProperty);
+                    $referentialConstraint = new ReferentialConstraint($localProperty, $foreignProperty, $relation);
                     $navigationProperty->addConstraint($referentialConstraint);
                 }
             }
