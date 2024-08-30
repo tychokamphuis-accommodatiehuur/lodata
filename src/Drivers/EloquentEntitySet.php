@@ -152,9 +152,7 @@ class EloquentEntitySet extends EntitySet implements CountInterface, CreateInter
      */
     public function getTable(): string
     {
-        $model = $this->getModel();
-
-        return $model->getTable();
+        return $this->getModel()->getTable();
     }
 
     /**
@@ -169,7 +167,7 @@ class EloquentEntitySet extends EntitySet implements CountInterface, CreateInter
     /**
      * Read an Eloquent model
      * @param  PropertyValue  $key  Model key
-     * @return Entity|null Entity
+     * @return Entity Entity
      */
     public function read(PropertyValue $key): Entity
     {
@@ -258,6 +256,10 @@ class EloquentEntitySet extends EntitySet implements CountInterface, CreateInter
     public function delete(PropertyValue $key): void
     {
         $model = $this->getModelByKey($key);
+
+        if (null === $model) {
+            throw new NotFoundException('entity_not_found', 'Entity not found');
+        }
 
         try {
             $model->delete();
