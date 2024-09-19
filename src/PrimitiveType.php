@@ -100,6 +100,11 @@ class PrimitiveType extends Type implements IdentifierInterface
         return $this->instance()->getOpenAPISchema();
     }
 
+    /**
+     * Test the provided value is correctly formatted for this type
+     * @param $value
+     * @return bool
+     */
     public function allowsValue($value): bool
     {
         return $this->instance()->allows($value);

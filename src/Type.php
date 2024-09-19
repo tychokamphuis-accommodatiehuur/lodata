@@ -230,6 +230,11 @@ abstract class Type
         return is_a($this->factory, $class, true);
     }
 
+    /**
+     * Test the provided value is correctly formatted for this type
+     * @param $value
+     * @return bool
+     */
     public function allowsValue($value): bool
     {
         return true;

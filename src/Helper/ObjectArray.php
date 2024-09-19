@@ -303,6 +303,7 @@ class ObjectArray implements Countable, Iterator, ArrayAccess
     }
 
     /**
+     * Reduce the objects in the array
      * @param  callable(mixed $initial, mixed $value, mixed $key): mixed  $callback
      * @param $initial
      * @return mixed|null

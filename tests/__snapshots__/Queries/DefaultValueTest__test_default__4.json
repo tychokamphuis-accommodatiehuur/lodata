@@ -245,7 +245,7 @@
                     "a": {
                         "type": "string",
                         "nullable": false,
-                        "default": {}
+                        "default": "a"
                     },
                     "b": {
                         "type": "string",
@@ -260,7 +260,7 @@
                     "a": {
                         "type": "string",
                         "nullable": false,
-                        "default": {}
+                        "default": "a"
                     },
                     "b": {
                         "type": "string",

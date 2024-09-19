@@ -53,5 +53,14 @@ class GuidTest extends TestCase
             (new Request)
                 ->path('/examples(00000000-0000-0000-0000-0012ea25eefb)')
         );
+
+        $this->assertBadRequest(
+            (new Request)
+                ->path('/examples')
+                ->body([
+                    'id' => 'hello',
+                ])
+                ->post(),
+        );
     }
 }

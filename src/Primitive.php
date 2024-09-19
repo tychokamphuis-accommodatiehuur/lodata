@@ -18,6 +18,7 @@ use Flat3\Lodata\Interfaces\ResourceInterface;
 use Flat3\Lodata\Interfaces\ResponseInterface;
 use Flat3\Lodata\Interfaces\SerializeInterface;
 use Flat3\Lodata\Traits\HasIdentifier;
+use Stringable;
 
 /**
  * Primitive
@@ -57,7 +58,12 @@ abstract class Primitive implements ResourceInterface, ContextInterface, Identif
      * @return Primitive
      */
     abstract public function set($value);
-    
+
+    /**
+     * Test the provided value is formatted correctly for this type
+     * @param $value
+     * @return bool
+     */
     public function allows($value): bool
     {
         return true;
@@ -186,7 +192,7 @@ abstract class Primitive implements ResourceInterface, ContextInterface, Identif
             $value = $value->get();
         }
 
-        if (is_scalar($value) || is_null($value) || $value instanceof \Stringable) {
+        if (is_scalar($value) || is_null($value) || $value instanceof Stringable) {
             return (string) $this->get() === (string) $value;
         }
 
