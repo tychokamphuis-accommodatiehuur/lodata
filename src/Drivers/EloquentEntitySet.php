@@ -7,7 +7,7 @@ namespace Flat3\Lodata\Drivers;
 use Doctrine\DBAL\Schema\Column;
 use Exception;
 use Flat3\Lodata\Annotation\Capabilities\V1\DeepInsertSupport;
-use Flat3\Lodata\Annotation\Core\V1\ComputedDefaultValue;
+use Flat3\Lodata\Annotation\Core\V1\Computed;
 use Flat3\Lodata\Annotation\Core\V1\Description;
 use Flat3\Lodata\Attributes\LodataIdentifier;
 use Flat3\Lodata\Attributes\LodataProperty;
@@ -187,14 +187,12 @@ class EloquentEntitySet extends EntitySet implements CountInterface, CreateInter
      */
     protected function setModelAttributes(Model $model, PropertyValues $propertyValues): Model
     {
-        foreach ($propertyValues->getDeclaredPropertyValues() as $propertyValue) {
-            $model->setAttribute(
-                $this->getPropertySourceName($propertyValue->getProperty()),
-                $propertyValue->getPrimitive()->toMixed()
+        return $propertyValues->getDeclaredPropertyValues()->reduce(function(Model $model, PropertyValue $value) {
+            return $model->setAttribute(
+                $this->getPropertySourceName($value->getProperty()),
+                $value->getPrimitive()->toMixed(),
             );
-        }
-
-        return $model;
+        }, $model);
     }
 
     /**
@@ -229,7 +227,7 @@ class EloquentEntitySet extends EntitySet implements CountInterface, CreateInter
             foreach ($navigationProperty->getConstraints() as $constraint) {
                 $referencedProperty = $constraint->getReferencedProperty();
                 $model->setAttribute(
-                    $referencedProperty->getName(),
+                    $this->getPropertySourceName($referencedProperty),
                     $this->navigationSource->getParent()->getEntityId()->getPrimitive()->toMixed()
                 );
             }
@@ -677,7 +675,7 @@ class EloquentEntitySet extends EntitySet implements CountInterface, CreateInter
 
         $defaultValue = $model->getAttributeValue($column->getName());
         if ($defaultValue) {
-            $property->addAnnotation(new ComputedDefaultValue);
+            $property->addAnnotation(new Computed);
             $property->setDefaultValue($defaultValue);
         }
 
