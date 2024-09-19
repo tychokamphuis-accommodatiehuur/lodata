@@ -9,6 +9,7 @@ use Flat3\Lodata\Helper\Constants;
 use Flat3\Lodata\PathSegment\OpenAPI;
 use Flat3\Lodata\Primitive;
 use Flat3\Lodata\Property;
+use Stringable;
 
 /**
  * Guid
@@ -27,7 +28,7 @@ class Guid extends Primitive
             $value = $value->get();
         }
 
-        if (is_scalar($value) || is_null($value) || $value instanceof \Stringable) {
+        if (is_scalar($value) || is_null($value) || $value instanceof Stringable) {
             return (string) $this->get() === strtoupper((string) $value);
         }
 
@@ -80,5 +81,10 @@ class Guid extends Primitive
             'format' => 'uuid',
             'pattern' => '^'.Lexer::guid.'$',
         ]);
+    }
+
+    public function allows($value): bool
+    {
+        return Lexer::patternCheck(Lexer::guid, (string) $value);
     }
 }

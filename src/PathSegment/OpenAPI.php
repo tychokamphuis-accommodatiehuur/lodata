@@ -1105,7 +1105,7 @@ class OpenAPI implements PipeInterface, ResponseInterface, JsonInterface
         $schema['nullable'] = $property->isNullable();
 
         if ($property->hasStaticDefaultValue()) {
-            $schema['default'] = $property->computeDefaultValue();
+            $schema['default'] = $property->computeDefaultValue()->toJson();
         }
 
         if ($property->hasMaxLength()) {

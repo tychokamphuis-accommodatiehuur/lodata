@@ -245,7 +245,7 @@
                     "a": {
                         "type": "string",
                         "nullable": false,
-                        "default": {}
+                        "default": "a"
                     },
                     "b": {
                         "type": "string",
@@ -257,6 +257,11 @@
                 "type": "object",
                 "title": "test (Create schema)",
                 "properties": {
+                    "a": {
+                        "type": "string",
+                        "nullable": false,
+                        "default": "a"
+                    },
                     "b": {
                         "type": "string",
                         "nullable": true

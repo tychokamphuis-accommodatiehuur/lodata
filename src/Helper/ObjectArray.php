@@ -303,6 +303,20 @@ class ObjectArray implements Countable, Iterator, ArrayAccess
     }
 
     /**
+     * Reduce the objects in the array
+     * @param  callable(mixed $initial, mixed $value, mixed $key): mixed  $callback
+     * @param $initial
+     * @return mixed|null
+     */
+    public function reduce(callable $callback, $initial = null)
+    {
+        foreach ($this->array as $key => $value) {
+            $initial = $callback($initial, $value, $key);
+        }
+        return $initial;
+    }
+
+    /**
      * Sort the objects in the array
      * @param  callable  $callback
      * @return $this
