@@ -550,18 +550,18 @@ class EloquentEntitySet extends EntitySet implements CountInterface, CreateInter
 
                 switch (true) {
                     case $relation instanceof HasOneOrMany:
-                        $localProperty = $this->getPropertyBySourceName($relation->getLocalKeyName());
-                        $foreignProperty = $right->getPropertyBySourceName($relation->getForeignKeyName());
+                        $localProperty = $this->getPropertyBySourceName(is_array($relation->getLocalKeyName()) ? $relation->getLocalKeyName()[0] : $relation->getLocalKeyName());
+                        $foreignProperty = $right->getPropertyBySourceName(is_array($relation->getForeignKeyName()) ? $relation->getForeignKeyName()[0] : $relation->getForeignKeyName());
                         break;
 
                     case $relation instanceof BelongsTo:
-                        $localProperty = $this->getPropertyBySourceName($relation->getForeignKeyName());
-                        $foreignProperty = $right->getPropertyBySourceName($relation->getOwnerKeyName());
+                        $localProperty = $this->getPropertyBySourceName(is_array($relation->getForeignKeyName()) ? $relation->getForeignKeyName()[0] : $relation->getForeignKeyName());
+                        $foreignProperty = $right->getPropertyBySourceName(is_array($relation->getOwnerKeyName()) ? $relation->getOwnerKeyName()[0] : $relation->getOwnerKeyName());
                         break;
 
                     case $relation instanceof HasManyThrough:
-                        $localProperty = $this->getPropertyBySourceName($relation->getLocalKeyName());
-                        $foreignProperty = $right->getPropertyBySourceName($relation->getForeignKeyName());
+                        $localProperty = $this->getPropertyBySourceName(is_array($relation->getLocalKeyName()) ? $relation->getLocalKeyName()[0] : $relation->getLocalKeyName());
+                        $foreignProperty = $right->getPropertyBySourceName(is_array($relation->getForeignKeyName()) ? $relation->getForeignKeyName()[0] : $relation->getForeignKeyName());
                         break;
                 }
 
